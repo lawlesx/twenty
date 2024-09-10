@@ -219,7 +219,7 @@ export type ExecuteServerlessFunctionInput = {
   /** Id of the serverless function to execute */
   id: Scalars['UUID'];
   /** Payload in JSON format */
-  payload?: InputMaybe<Scalars['JSON']>;
+  payload: Scalars['JSON'];
   /** Version of the serverless function to execute */
   version?: Scalars['String'];
 };
@@ -338,6 +338,7 @@ export enum MessageChannelVisibility {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  activateWorkflowVersion: Scalars['Boolean'];
   activateWorkspace: Workspace;
   addUserToWorkspace: User;
   authorizeApp: AuthorizeApp;
@@ -347,15 +348,14 @@ export type Mutation = {
   createOneObject: Object;
   createOneServerlessFunction: ServerlessFunction;
   createOneServerlessFunctionFromFile: ServerlessFunction;
+  deactivateWorkflowVersion: Scalars['Boolean'];
   deleteCurrentWorkspace: Workspace;
   deleteOneObject: Object;
   deleteOneServerlessFunction: ServerlessFunction;
   deleteUser: User;
   disablePostgresProxy: PostgresCredentials;
-  disableWorkflowTrigger: Scalars['Boolean'];
   emailPasswordResetLink: EmailPasswordResetLink;
   enablePostgresProxy: PostgresCredentials;
-  enableWorkflowTrigger: Scalars['Boolean'];
   exchangeAuthorizationCode: ExchangeAuthCode;
   executeOneServerlessFunction: ServerlessFunctionExecutionResult;
   generateApiKeyToken: ApiKeyToken;
@@ -379,6 +379,11 @@ export type Mutation = {
   uploadProfilePicture: Scalars['String'];
   uploadWorkspaceLogo: Scalars['String'];
   verify: Verify;
+};
+
+
+export type MutationActivateWorkflowVersionArgs = {
+  workflowVersionId: Scalars['String'];
 };
 
 
@@ -423,6 +428,11 @@ export type MutationCreateOneServerlessFunctionFromFileArgs = {
 };
 
 
+export type MutationDeactivateWorkflowVersionArgs = {
+  workflowVersionId: Scalars['String'];
+};
+
+
 export type MutationDeleteOneObjectArgs = {
   input: DeleteOneObjectInput;
 };
@@ -433,18 +443,8 @@ export type MutationDeleteOneServerlessFunctionArgs = {
 };
 
 
-export type MutationDisableWorkflowTriggerArgs = {
-  workflowVersionId: Scalars['String'];
-};
-
-
 export type MutationEmailPasswordResetLinkArgs = {
   email: Scalars['String'];
-};
-
-
-export type MutationEnableWorkflowTriggerArgs = {
-  workflowVersionId: Scalars['String'];
 };
 
 
@@ -638,9 +638,10 @@ export type Query = {
   currentWorkspace: Workspace;
   findWorkspaceFromInviteHash: Workspace;
   getAISQLQuery: AisqlQueryResult;
+  getAvailablePackages: Scalars['JSON'];
   getPostgresCredentials?: Maybe<PostgresCredentials>;
   getProductPrices: ProductPricesEntity;
-  getServerlessFunctionSourceCode: Scalars['String'];
+  getServerlessFunctionSourceCode?: Maybe<Scalars['String']>;
   getTimelineCalendarEventsFromCompanyId: TimelineCalendarEventsWithTotal;
   getTimelineCalendarEventsFromPersonId: TimelineCalendarEventsWithTotal;
   getTimelineThreadsFromCompanyId: TimelineThreadsWithTotal;
@@ -1513,6 +1514,13 @@ export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetCurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'User', id: any, firstName: string, lastName: string, email: string, canImpersonate: boolean, supportUserHash?: string | null, onboardingStatus?: OnboardingStatus | null, userVars: any, workspaceMember?: { __typename?: 'WorkspaceMember', id: any, colorScheme: string, avatarUrl?: string | null, locale?: string | null, timeZone?: string | null, dateFormat?: WorkspaceMemberDateFormatEnum | null, timeFormat?: WorkspaceMemberTimeFormatEnum | null, name: { __typename?: 'FullName', firstName: string, lastName: string } } | null, workspaceMembers?: Array<{ __typename?: 'WorkspaceMember', id: any, colorScheme: string, avatarUrl?: string | null, locale?: string | null, timeZone?: string | null, dateFormat?: WorkspaceMemberDateFormatEnum | null, timeFormat?: WorkspaceMemberTimeFormatEnum | null, name: { __typename?: 'FullName', firstName: string, lastName: string } }> | null, defaultWorkspace: { __typename?: 'Workspace', id: any, displayName?: string | null, logo?: string | null, domainName?: string | null, inviteHash?: string | null, allowImpersonation: boolean, activationStatus: WorkspaceActivationStatus, metadataVersion: number, workspaceMembersCount?: number | null, featureFlags?: Array<{ __typename?: 'FeatureFlag', id: any, key: string, value: boolean, workspaceId: string }> | null, currentBillingSubscription?: { __typename?: 'BillingSubscription', id: any, status: SubscriptionStatus, interval?: SubscriptionInterval | null } | null }, workspaces: Array<{ __typename?: 'UserWorkspace', workspace?: { __typename?: 'Workspace', id: any, logo?: string | null, displayName?: string | null, domainName?: string | null } | null }> } };
+
+export type ActivateWorkflowVersionMutationVariables = Exact<{
+  workflowVersionId: Scalars['String'];
+}>;
+
+
+export type ActivateWorkflowVersionMutation = { __typename?: 'Mutation', activateWorkflowVersion: boolean };
 
 export type WorkspaceMemberQueryFragmentFragment = { __typename?: 'WorkspaceMember', id: any, colorScheme: string, avatarUrl?: string | null, locale?: string | null, timeZone?: string | null, dateFormat?: WorkspaceMemberDateFormatEnum | null, timeFormat?: WorkspaceMemberTimeFormatEnum | null, name: { __typename?: 'FullName', firstName: string, lastName: string } };
 
@@ -2828,6 +2836,37 @@ export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
 export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
 export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
+export const ActivateWorkflowVersionDocument = gql`
+    mutation ActivateWorkflowVersion($workflowVersionId: String!) {
+  activateWorkflowVersion(workflowVersionId: $workflowVersionId)
+}
+    `;
+export type ActivateWorkflowVersionMutationFn = Apollo.MutationFunction<ActivateWorkflowVersionMutation, ActivateWorkflowVersionMutationVariables>;
+
+/**
+ * __useActivateWorkflowVersionMutation__
+ *
+ * To run a mutation, you first call `useActivateWorkflowVersionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useActivateWorkflowVersionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [activateWorkflowVersionMutation, { data, loading, error }] = useActivateWorkflowVersionMutation({
+ *   variables: {
+ *      workflowVersionId: // value for 'workflowVersionId'
+ *   },
+ * });
+ */
+export function useActivateWorkflowVersionMutation(baseOptions?: Apollo.MutationHookOptions<ActivateWorkflowVersionMutation, ActivateWorkflowVersionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ActivateWorkflowVersionMutation, ActivateWorkflowVersionMutationVariables>(ActivateWorkflowVersionDocument, options);
+      }
+export type ActivateWorkflowVersionMutationHookResult = ReturnType<typeof useActivateWorkflowVersionMutation>;
+export type ActivateWorkflowVersionMutationResult = Apollo.MutationResult<ActivateWorkflowVersionMutation>;
+export type ActivateWorkflowVersionMutationOptions = Apollo.BaseMutationOptions<ActivateWorkflowVersionMutation, ActivateWorkflowVersionMutationVariables>;
 export const AddUserToWorkspaceDocument = gql`
     mutation AddUserToWorkspace($inviteHash: String!) {
   addUserToWorkspace(inviteHash: $inviteHash) {
