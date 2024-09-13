@@ -1,7 +1,4 @@
-import { JestConfigWithTsJest, pathsToModuleNameMapper } from 'ts-jest';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const tsConfig = require('./tsconfig.json');
+import { JestConfigWithTsJest } from 'ts-jest';
 
 const jestConfig: JestConfigWithTsJest = {
   // to enable logs, comment out the following line
@@ -15,7 +12,9 @@ const jestConfig: JestConfigWithTsJest = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  moduleNameMapper: pathsToModuleNameMapper(tsConfig.compilerOptions.paths),
+  moduleNameMapper: {
+    '^src/(.*)': '<rootDir>/src/$1',
+  },
   moduleFileExtensions: ['js', 'json', 'ts'],
   modulePathIgnorePatterns: ['<rootDir>/dist'],
   fakeTimers: {
