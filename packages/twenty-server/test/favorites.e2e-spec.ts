@@ -20,6 +20,7 @@ describe('favoritesResolver (e2e)', () => {
                 opportunityId
                 taskId
                 noteId
+                viewId
               }
             }
           }
@@ -57,6 +58,7 @@ describe('favoritesResolver (e2e)', () => {
           expect(favorites).toHaveProperty('opportunityId');
           expect(favorites).toHaveProperty('taskId');
           expect(favorites).toHaveProperty('noteId');
+          expect(favorites).toHaveProperty('viewId');
         }
       });
   });

@@ -13,7 +13,6 @@ describe('noteTargetsResolver (e2e)', () => {
                 id
                 createdAt
                 updatedAt
-                deletedAt
                 noteId
                 personId
                 companyId
@@ -48,7 +47,6 @@ describe('noteTargetsResolver (e2e)', () => {
           expect(notetargets).toHaveProperty('id');
           expect(notetargets).toHaveProperty('createdAt');
           expect(notetargets).toHaveProperty('updatedAt');
-          expect(notetargets).toHaveProperty('deletedAt');
           expect(notetargets).toHaveProperty('noteId');
           expect(notetargets).toHaveProperty('personId');
           expect(notetargets).toHaveProperty('companyId');

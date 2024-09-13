@@ -15,7 +15,7 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/twenty-server",
-        "commands": ["NODE_ENV=test jest --config ./jest-e2e.config.ts"]
+        "commands": ["./scripts/run-integration.sh"]
       }
     },
     "build:packageJson": {

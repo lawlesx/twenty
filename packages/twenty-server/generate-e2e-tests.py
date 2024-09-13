@@ -1,4 +1,5 @@
 import requests
+import argparse
 import os
 import re
 
@@ -178,48 +179,52 @@ describe('{query_name}Resolver (e2e)', () => {{
 }});
 """
 
-def write_test_file(query_name, content):
+import argparse
+
+def write_test_file(query_name, content, force=False):
     file_name = f"{to_kebab_case(query_name)}.e2e-spec.ts"
     file_path = os.path.join(TEST_OUTPUT_DIR, file_name)
+
+    if os.path.exists(file_path) and not force:
+        return False
 
     with open(file_path, 'w') as f:
         f.write(content)
 
-    print(f"Generated test file: {file_path}")
+    if os.path.exists(file_path) and force:
+        return 'updated'
+    
+    return 'created'
 
-def generate_tests():
+def generate_tests(force=False):
     os.makedirs(TEST_OUTPUT_DIR, exist_ok=True)
     schema_data = fetch_graphql_schema()
     types = schema_data['data']['__schema']['types']
 
-    # Identify query type
     query_type_name = schema_data['data']['__schema']['queryType']['name']
     query_type = next(t for t in types if t['name'] == query_type_name)
 
-    # Iterate through all queries in the schema
+    created_count = 0
+    updated_count = 0
+    total_count = 0
+
     for query in query_type['fields']:
         query_name = query['name']
 
-        # Skip queries with required arguments
         if has_required_args(query['args']):
-            print(f"Skipping {query_name}: Required arguments found.")
             continue
-        
+
         if 'Duplicates' in query_name:
-            print(f"Skipping {query_name}: Duplicates query.")
             continue
-        
+
         query_return_type = unwrap_type(query['type'])
 
-        # Check if this is a connection type
         if query_return_type['kind'] == 'OBJECT' and 'Connection' in query_return_type['name']:
-            print(f"Generating test for {query_name} (connection type)")
-            # Get the edge type
+            total_count += 1
             connection_type_info = next((f for f in types if f['name'] == query_return_type['name']), None)
             edge_type_info = next((f for f in connection_type_info['fields'] if f['name'] == 'edges'), None)
             if edge_type_info:
                 return_type = unwrap_type(edge_type_info['type'])
-                # Find the node type from the edge type
                 return_type_info = next((t for t in types if t['name'] == return_type['name']), None)
                 node_type_info = next((f for f in return_type_info['fields'] if f['name'] == 'node'), None)
                 if node_type_info:
@@ -227,12 +232,19 @@ def generate_tests():
                     node_type_info = next((t for t in types if t['name'] == node_type['name']), None)
                     content = generate_test_content(query_name, node_type_info['fields'])
                     if content:
-                        write_test_file(query_name, content)
-        # else:
-        #     # Generate test for non-connection queries
-        #     content = generate_test_content(query_name, query['fields'])
-        #     if content:
-        #         write_test_file(query_name, content)
+                        result = write_test_file(query_name, content, force)
+                        if result == 'created':
+                            created_count += 1
+                        elif result == 'updated':
+                            updated_count += 1
+
+    print(f"Number of tests created: {created_count}/{total_count}")
+    if force:
+        print(f"Number of tests updated: {updated_count}/{total_count}")
 
 if __name__ == '__main__':
-    generate_tests()
+    parser = argparse.ArgumentParser(description='Generate GraphQL integration tests.')
+    parser.add_argument('--force', action='store_true', help='Force overwrite existing test files.')
+    args = parser.parse_args()
+
+    generate_tests(force=args.force)

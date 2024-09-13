@@ -13,7 +13,6 @@ describe('taskTargetsResolver (e2e)', () => {
                 id
                 createdAt
                 updatedAt
-                deletedAt
                 taskId
                 personId
                 companyId
@@ -48,7 +47,6 @@ describe('taskTargetsResolver (e2e)', () => {
           expect(tasktargets).toHaveProperty('id');
           expect(tasktargets).toHaveProperty('createdAt');
           expect(tasktargets).toHaveProperty('updatedAt');
-          expect(tasktargets).toHaveProperty('deletedAt');
           expect(tasktargets).toHaveProperty('taskId');
           expect(tasktargets).toHaveProperty('personId');
           expect(tasktargets).toHaveProperty('companyId');

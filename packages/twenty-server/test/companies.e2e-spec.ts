@@ -17,7 +17,6 @@ describe('companiesResolver (e2e)', () => {
                 id
                 createdAt
                 updatedAt
-                deletedAt
                 accountOwnerId
                 tagline
                 workPolicy
@@ -56,7 +55,6 @@ describe('companiesResolver (e2e)', () => {
           expect(companies).toHaveProperty('id');
           expect(companies).toHaveProperty('createdAt');
           expect(companies).toHaveProperty('updatedAt');
-          expect(companies).toHaveProperty('deletedAt');
           expect(companies).toHaveProperty('accountOwnerId');
           expect(companies).toHaveProperty('tagline');
           expect(companies).toHaveProperty('workPolicy');

@@ -10,7 +10,6 @@ describe('peopleResolver (e2e)', () => {
           people {
             edges {
               node {
-                email
                 jobTitle
                 phone
                 city
@@ -19,7 +18,6 @@ describe('peopleResolver (e2e)', () => {
                 id
                 createdAt
                 updatedAt
-                deletedAt
                 companyId
                 intro
                 whatsapp
@@ -52,7 +50,6 @@ describe('peopleResolver (e2e)', () => {
         if (edges.length > 0) {
           const people = edges[0].node;
 
-          expect(people).toHaveProperty('email');
           expect(people).toHaveProperty('jobTitle');
           expect(people).toHaveProperty('phone');
           expect(people).toHaveProperty('city');
@@ -61,7 +58,6 @@ describe('peopleResolver (e2e)', () => {
           expect(people).toHaveProperty('id');
           expect(people).toHaveProperty('createdAt');
           expect(people).toHaveProperty('updatedAt');
-          expect(people).toHaveProperty('deletedAt');
           expect(people).toHaveProperty('companyId');
           expect(people).toHaveProperty('intro');
           expect(people).toHaveProperty('whatsapp');
