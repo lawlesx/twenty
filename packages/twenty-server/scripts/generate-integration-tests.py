@@ -95,7 +95,7 @@ fragment TypeRef on __Type {
 
 GRAPHQL_URL = 'http://localhost:3000/graphql'
 BEARER_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMDIwMjAyMC05ZTNiLTQ2ZDQtYTU1Ni04OGI5ZGRjMmIwMzQiLCJ3b3Jrc3BhY2VJZCI6IjIwMjAyMDIwLTFjMjUtNGQwMi1iZjI1LTZhZWNjZjdlYTQxOSIsIndvcmtzcGFjZU1lbWJlcklkIjoiMjAyMDIwMjAtMDY4Ny00YzQxLWI3MDctZWQxYmZjYTk3MmE3IiwiaWF0IjoxNzI2MTQ4MTAyLCJleHAiOjEzMjQ0NjcyMTAyfQ.4BQY9ExVF2HwgHAwep_HHc85ehGEQqkqTkIjv65QxF8'
-TEST_OUTPUT_DIR = './test'
+TEST_OUTPUT_DIR = '../test'
 
 def fetch_graphql_schema():
     headers = {'Authorization': BEARER_TOKEN}
