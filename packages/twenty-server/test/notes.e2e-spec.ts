@@ -2,16 +2,21 @@ import request from 'supertest';
 
 const client = request(`http://localhost:${APP_PORT}`);
 
-describe('CompanyResolver (e2e)', () => {
-  it('should find many companies', () => {
+describe('notesResolver (e2e)', () => {
+  it('should find many notes', () => {
     const queryData = {
       query: `
-        query Companies {
-          companies {
+        query notes {
+          notes {
             edges {
               node {
+                position
+                title
+                body
                 id
-                name
+                createdAt
+                updatedAt
+                deletedAt
               }
             }
           }
@@ -29,7 +34,7 @@ describe('CompanyResolver (e2e)', () => {
         expect(res.body.errors).toBeUndefined();
       })
       .expect((res) => {
-        const data = res.body.data.companies;
+        const data = res.body.data.notes;
 
         expect(data).toBeDefined();
         expect(Array.isArray(data.edges)).toBe(true);
@@ -37,11 +42,15 @@ describe('CompanyResolver (e2e)', () => {
         const edges = data.edges;
 
         if (edges.length > 0) {
-          const company = edges[0].node;
+          const notes = edges[0].node;
 
-          expect(company).toBeDefined();
-          expect(company).toHaveProperty('id');
-          expect(company).toHaveProperty('name');
+          expect(notes).toHaveProperty('position');
+          expect(notes).toHaveProperty('title');
+          expect(notes).toHaveProperty('body');
+          expect(notes).toHaveProperty('id');
+          expect(notes).toHaveProperty('createdAt');
+          expect(notes).toHaveProperty('updatedAt');
+          expect(notes).toHaveProperty('deletedAt');
         }
       });
   });

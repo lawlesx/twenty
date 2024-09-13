@@ -2,16 +2,20 @@ import request from 'supertest';
 
 const client = request(`http://localhost:${APP_PORT}`);
 
-describe('CompanyResolver (e2e)', () => {
-  it('should find many companies', () => {
+describe('commentsResolver (e2e)', () => {
+  it('should find many comments', () => {
     const queryData = {
       query: `
-        query Companies {
-          companies {
+        query comments {
+          comments {
             edges {
               node {
+                body
                 id
-                name
+                createdAt
+                updatedAt
+                authorId
+                activityId
               }
             }
           }
@@ -29,7 +33,7 @@ describe('CompanyResolver (e2e)', () => {
         expect(res.body.errors).toBeUndefined();
       })
       .expect((res) => {
-        const data = res.body.data.companies;
+        const data = res.body.data.comments;
 
         expect(data).toBeDefined();
         expect(Array.isArray(data.edges)).toBe(true);
@@ -37,11 +41,14 @@ describe('CompanyResolver (e2e)', () => {
         const edges = data.edges;
 
         if (edges.length > 0) {
-          const company = edges[0].node;
+          const comments = edges[0].node;
 
-          expect(company).toBeDefined();
-          expect(company).toHaveProperty('id');
-          expect(company).toHaveProperty('name');
+          expect(comments).toHaveProperty('body');
+          expect(comments).toHaveProperty('id');
+          expect(comments).toHaveProperty('createdAt');
+          expect(comments).toHaveProperty('updatedAt');
+          expect(comments).toHaveProperty('authorId');
+          expect(comments).toHaveProperty('activityId');
         }
       });
   });

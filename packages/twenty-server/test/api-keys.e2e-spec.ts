@@ -2,16 +2,20 @@ import request from 'supertest';
 
 const client = request(`http://localhost:${APP_PORT}`);
 
-describe('CompanyResolver (e2e)', () => {
-  it('should find many companies', () => {
+describe('apiKeysResolver (e2e)', () => {
+  it('should find many apiKeys', () => {
     const queryData = {
       query: `
-        query Companies {
-          companies {
+        query apiKeys {
+          apiKeys {
             edges {
               node {
-                id
                 name
+                expiresAt
+                revokedAt
+                id
+                createdAt
+                updatedAt
               }
             }
           }
@@ -29,7 +33,7 @@ describe('CompanyResolver (e2e)', () => {
         expect(res.body.errors).toBeUndefined();
       })
       .expect((res) => {
-        const data = res.body.data.companies;
+        const data = res.body.data.apiKeys;
 
         expect(data).toBeDefined();
         expect(Array.isArray(data.edges)).toBe(true);
@@ -37,11 +41,14 @@ describe('CompanyResolver (e2e)', () => {
         const edges = data.edges;
 
         if (edges.length > 0) {
-          const company = edges[0].node;
+          const apikeys = edges[0].node;
 
-          expect(company).toBeDefined();
-          expect(company).toHaveProperty('id');
-          expect(company).toHaveProperty('name');
+          expect(apikeys).toHaveProperty('name');
+          expect(apikeys).toHaveProperty('expiresAt');
+          expect(apikeys).toHaveProperty('revokedAt');
+          expect(apikeys).toHaveProperty('id');
+          expect(apikeys).toHaveProperty('createdAt');
+          expect(apikeys).toHaveProperty('updatedAt');
         }
       });
   });

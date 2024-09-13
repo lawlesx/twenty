@@ -2,16 +2,19 @@ import request from 'supertest';
 
 const client = request(`http://localhost:${APP_PORT}`);
 
-describe('CompanyResolver (e2e)', () => {
-  it('should find many companies', () => {
+describe('blocklistsResolver (e2e)', () => {
+  it('should find many blocklists', () => {
     const queryData = {
       query: `
-        query Companies {
-          companies {
+        query blocklists {
+          blocklists {
             edges {
               node {
+                handle
                 id
-                name
+                createdAt
+                updatedAt
+                workspaceMemberId
               }
             }
           }
@@ -29,7 +32,7 @@ describe('CompanyResolver (e2e)', () => {
         expect(res.body.errors).toBeUndefined();
       })
       .expect((res) => {
-        const data = res.body.data.companies;
+        const data = res.body.data.blocklists;
 
         expect(data).toBeDefined();
         expect(Array.isArray(data.edges)).toBe(true);
@@ -37,11 +40,13 @@ describe('CompanyResolver (e2e)', () => {
         const edges = data.edges;
 
         if (edges.length > 0) {
-          const company = edges[0].node;
+          const blocklists = edges[0].node;
 
-          expect(company).toBeDefined();
-          expect(company).toHaveProperty('id');
-          expect(company).toHaveProperty('name');
+          expect(blocklists).toHaveProperty('handle');
+          expect(blocklists).toHaveProperty('id');
+          expect(blocklists).toHaveProperty('createdAt');
+          expect(blocklists).toHaveProperty('updatedAt');
+          expect(blocklists).toHaveProperty('workspaceMemberId');
         }
       });
   });

@@ -2,16 +2,20 @@ import request from 'supertest';
 
 const client = request(`http://localhost:${APP_PORT}`);
 
-describe('CompanyResolver (e2e)', () => {
-  it('should find many companies', () => {
+describe('viewSortsResolver (e2e)', () => {
+  it('should find many viewSorts', () => {
     const queryData = {
       query: `
-        query Companies {
-          companies {
+        query viewSorts {
+          viewSorts {
             edges {
               node {
+                fieldMetadataId
+                direction
                 id
-                name
+                createdAt
+                updatedAt
+                viewId
               }
             }
           }
@@ -29,7 +33,7 @@ describe('CompanyResolver (e2e)', () => {
         expect(res.body.errors).toBeUndefined();
       })
       .expect((res) => {
-        const data = res.body.data.companies;
+        const data = res.body.data.viewSorts;
 
         expect(data).toBeDefined();
         expect(Array.isArray(data.edges)).toBe(true);
@@ -37,11 +41,14 @@ describe('CompanyResolver (e2e)', () => {
         const edges = data.edges;
 
         if (edges.length > 0) {
-          const company = edges[0].node;
+          const viewsorts = edges[0].node;
 
-          expect(company).toBeDefined();
-          expect(company).toHaveProperty('id');
-          expect(company).toHaveProperty('name');
+          expect(viewsorts).toHaveProperty('fieldMetadataId');
+          expect(viewsorts).toHaveProperty('direction');
+          expect(viewsorts).toHaveProperty('id');
+          expect(viewsorts).toHaveProperty('createdAt');
+          expect(viewsorts).toHaveProperty('updatedAt');
+          expect(viewsorts).toHaveProperty('viewId');
         }
       });
   });

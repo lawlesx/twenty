@@ -2,16 +2,20 @@ import request from 'supertest';
 
 const client = request(`http://localhost:${APP_PORT}`);
 
-describe('CompanyResolver (e2e)', () => {
-  it('should find many companies', () => {
+describe('webhooksResolver (e2e)', () => {
+  it('should find many webhooks', () => {
     const queryData = {
       query: `
-        query Companies {
-          companies {
+        query webhooks {
+          webhooks {
             edges {
               node {
+                targetUrl
+                operation
+                description
                 id
-                name
+                createdAt
+                updatedAt
               }
             }
           }
@@ -29,7 +33,7 @@ describe('CompanyResolver (e2e)', () => {
         expect(res.body.errors).toBeUndefined();
       })
       .expect((res) => {
-        const data = res.body.data.companies;
+        const data = res.body.data.webhooks;
 
         expect(data).toBeDefined();
         expect(Array.isArray(data.edges)).toBe(true);
@@ -37,11 +41,14 @@ describe('CompanyResolver (e2e)', () => {
         const edges = data.edges;
 
         if (edges.length > 0) {
-          const company = edges[0].node;
+          const webhooks = edges[0].node;
 
-          expect(company).toBeDefined();
-          expect(company).toHaveProperty('id');
-          expect(company).toHaveProperty('name');
+          expect(webhooks).toHaveProperty('targetUrl');
+          expect(webhooks).toHaveProperty('operation');
+          expect(webhooks).toHaveProperty('description');
+          expect(webhooks).toHaveProperty('id');
+          expect(webhooks).toHaveProperty('createdAt');
+          expect(webhooks).toHaveProperty('updatedAt');
         }
       });
   });
